@@ -9,6 +9,7 @@ https://stackoverflow.com/q/2225995/
 import numpy as np
 
 from matplotlib import _api
+from matplotlib import colors as mcolors
 
 __all__ = ['stackplot']
 
@@ -70,7 +71,10 @@ def stackplot(axes, x, *args,
 
     labels = iter(labels)
     if colors is not None:
-        axes.set_prop_cycle(color=colors)
+        # Resolve any CN color references to actual colors before setting
+        # the property cycle to avoid circular dependency issues
+        resolved_colors = [mcolors.to_rgba(c)[:3] for c in colors]
+        axes.set_prop_cycle(color=resolved_colors)
 
     # Assume data passed has not been 'stacked', so stack it here.
     # We'll need a float buffer for the upcoming calculations.

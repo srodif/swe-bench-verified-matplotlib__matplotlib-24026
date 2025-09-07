@@ -2892,6 +2892,26 @@ def test_stackplot_baseline():
     axs[1, 1].stackplot(range(100), d.T, baseline='weighted_wiggle')
 
 
+def test_stackplot_cn_colors():
+    """Test that stackplot works with CN color references."""
+    # This test verifies that CN color references like 'C0', 'C1', etc.
+    # are properly resolved and don't raise ValueError about circular references
+    fig, ax = plt.subplots()
+    x = np.linspace(0, 10, 10)
+    y1 = 1.0 * x
+    y2 = 2.0 * x + 1
+    y3 = 3.0 * x + 2
+    
+    # This should not raise a ValueError
+    ax.stackplot(x, y1, y2, y3, colors=['C0', 'C1', 'C2'])
+    
+    # Test that mixed color types work too
+    ax.stackplot(x, y1, y2, colors=['C4', 'red'])
+    
+    # Test that regular colors still work
+    ax.stackplot(x, y1, y2, colors=['blue', 'green'])
+
+
 def _bxp_test_helper(
         stats_kwargs={}, transform_stats=lambda s: s, bxp_kwargs={}):
     np.random.seed(937)
